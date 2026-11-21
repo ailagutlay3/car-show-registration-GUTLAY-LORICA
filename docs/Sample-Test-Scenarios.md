@@ -24,9 +24,9 @@
 | 13 | Submit duplicate plate number | 409 Conflict | Duplicate plate error returned | PASS |
 | 14 | Get registrations with default pagination | 200 OK, page 1, page size 10 | Returned 31 registrations, 10 per page | PASS |
 | 15 | Get registrations sorted newest first | Newest registrations first | CS27-0031 through CS27-0026 appeared first | PASS |
-| 16 | Get page 2 with page size 5 | 200 OK | Not yet verified | PENDING |
-| 17 | Request page 999 | Empty items, total count unchanged | Not yet verified | PENDING |
-| 18 | Request page 0 | 400 Bad Request | Not yet verified | PENDING |
+| 16 | Get page 2 with page size 5 | 200 OK | verified | PASS |
+| 17 | Request page 999 | Empty items, total count unchanged | verified | PASS |
+| 18 | Request page 0 | 400 Bad Request | verified | PASS |
 | 19 | Request page size 100 | 400 Bad Request | Not yet verified | PENDING |
 | 20 | Filter registrations by VIP type | Only VIP registrations returned | 8 VIP registrations returned | PASS |
 | 21 | Filter registrations by Confirmed status | Only Confirmed registrations returned | 10 Confirmed registrations returned | PASS |
