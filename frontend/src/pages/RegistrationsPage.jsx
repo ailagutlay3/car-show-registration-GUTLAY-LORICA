@@ -11,7 +11,7 @@ function formatCurrency(amount) {
   return new Intl.NumberFormat("en-PH", {
     style: "currency",
     currency: "PHP",
-  }).format(amount);
+  }).format(amount ?? 0);
 }
 
 function formatDate(date) {
@@ -89,15 +89,13 @@ export default function RegistrationsPage() {
       active = false;
     };
   }, [search, type, status, page, pageSize, retry]);
+
   function clearFilters() {
     setSearch("");
     setType("");
     setStatus("");
     setPage(1);
   }
-
-  const startItem = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
-  const endItem = Math.min(page * pageSize, totalCount);
 
   return (
     <div className="dashboard-container">
@@ -191,19 +189,17 @@ export default function RegistrationsPage() {
             </div>
           </div>
 
-         
-            {error && (
-         <div className="alert alert-danger d-flex justify-content-between align-items-center">
-         <span>{error}</span>
-            <button
-           className="btn btn-sm btn-outline-danger"
-            onClick={() => setRetry((current) => current + 1)}
+          {error && (
+            <div className="alert alert-danger d-flex justify-content-between align-items-center">
+              <span>{error}</span>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => setRetry((current) => current + 1)}
               >
-                 Try Again
-                 </button>
-                 </div>
-                )}
-
+                Try Again
+              </button>
+            </div>
+          )}
 
           <div className="table-responsive">
             <table className="table table-hover align-middle">
@@ -219,83 +215,97 @@ export default function RegistrationsPage() {
                   <th>Payment</th>
                 </tr>
               </thead>
-                <tbody>
 
-                    
-             {loading ? (
-                Array.from({ length: pageSize }, (_, index) => (
-                   <tr key={`skeleton-${index}`}>
-                     {Array.from({ length: 8 }, (_, column) => (
-                         <td key={column}>
-                        <div className="placeholder-glow">
-                          <span
-                      className={`placeholder rounded ${
-                  column === 2 || column === 3 ? "col-10" : "col-7"
-                }`}
-              />
-              {column === 2 || column === 3 ? (
-                <div className="placeholder-glow mt-2">
-                  <span className="placeholder col-6 rounded" />
-                </div>
-              ) : null}
-            </div>
-          </td>
-        ))}
-      </tr>
-    ))
-  ) : registrations.length === 0 ? (
-    <tr>
-      <td colSpan="8" className="text-center py-5">
-        <p className="fw-semibold mb-2">
-          No registrations match your filters.
-        </p>
-        <button
-          className="btn btn-sm btn-outline-primary"
-          onClick={clearFilters}
-        >
-          Clear Filters
-        </button>
-      </td>
-    </tr>
-  ) : (
-    registrations.map((item) => (
-      <tr key={item.id}>
-        <td className="fw-semibold">
-          {item.registrationNumber}
-        </td>
-        <td className="small text-secondary">
-          {formatDate(item.registrationDate)}
-        </td>
-        <td>
-          <div className="fw-semibold">{item.participantName}</div>
-          <div className="small text-secondary">{item.contactNumber}</div>
-          <div className="small text-secondary">{item.email}</div>
-        </td>
-        <td>
-          <div className="fw-semibold">
-            {item.carMake} {item.carModel}
-          </div>
-          <div className="small text-secondary">{item.plateNumber}</div>
-        </td>
-        <td>{item.type}</td>
-        <td>
-          <StatusBadge status={item.status} />
-        </td>
-        <td className="small">
-          <div>{formatCurrency(item.registrationFee)}</div>
-          <div className="text-secondary">
-            {formatCurrency(item.amountPaid)}
-          </div>
-        </td>
-        <td>
-          <PaymentBadge status={item.paymentStatus} />
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
+              <tbody>
+                {loading ? (
+                  Array.from({ length: pageSize }, (_, index) => (
+                    <tr key={`skeleton-${index}`}>
+                      {Array.from({ length: 8 }, (_, column) => (
+                        <td key={column}>
+                          <div className="placeholder-glow">
+                            <span
+                              className={`placeholder rounded ${
+                                column === 2 || column === 3
+                                  ? "col-10"
+                                  : "col-7"
+                              }`}
+                            />
+                            {column === 2 || column === 3 ? (
+                              <div className="placeholder-glow mt-2">
+                                <span className="placeholder col-6 rounded" />
+                              </div>
+                            ) : null}
+                          </div>
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : registrations.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="text-center py-5">
+                      <p className="fw-semibold mb-2">
+                        No registrations match your filters.
+                      </p>
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={clearFilters}
+                      >
+                        Clear Filters
+                      </button>
+                    </td>
+                  </tr>
+                ) : (
+                  registrations.map((item) => (
+                    <tr key={item.id}>
+                      <td className="fw-semibold">
+                        {item.registrationNumber}
+                      </td>
 
+                      <td className="small text-secondary">
+                        {formatDate(item.registrationDate)}
+                      </td>
 
+                      <td>
+                        <div className="fw-semibold">
+                          {item.participantName}
+                        </div>
+                        <div className="small text-secondary">
+                          {item.contactNumber}
+                        </div>
+                        <div className="small text-secondary">
+                          {item.email}
+                        </div>
+                      </td>
+
+                      <td>
+                        <div className="fw-semibold">
+                          {item.carMakeModel || "No car details"}
+                        </div>
+                        <div className="small text-secondary">
+                          {item.plateNumber || "No plate number"}
+                        </div>
+                      </td>
+
+                      <td>{item.type}</td>
+
+                      <td>
+                        <StatusBadge status={item.status} />
+                      </td>
+
+                      <td className="small">
+                        <div>{formatCurrency(item.registrationFee)}</div>
+                        <div className="text-secondary">
+                          {formatCurrency(item.amountPaid)}
+                        </div>
+                      </td>
+
+                      <td>
+                        <PaymentBadge status={item.paymentStatus} />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
             </table>
           </div>
 
